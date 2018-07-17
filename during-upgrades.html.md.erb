@@ -1,0 +1,70 @@
+---
+title: What Happens During PKS Upgrades
+owner: PKS
+---
+
+This topic explains what happens during a PKS upgrade and how it affects your PKS-deployed Kubernetes clusters.
+
+## <a id='before-upgrade'></a>Before Upgrading PKS
+
+Before you begin upgrading the PKS tile, consider your Kubernetes workload capacity and uptime requirements.
+
+* If your Kubernetes clusters are near capacity for your existing infrastructure, Pivotal recommends scaling them up before you upgrade.
+* If your Kubernetes workers are operating too close to their capacity, the PKS upgrade can fail.
+
+For more information about preparing to a PKS upgrade, see [Prepare to Upgrade](./upgrade-pks.html#prepare) in _Upgrade PKS_.
+
+## <a id='during-upgrade'></a>Upgrading PKS
+
+During upgrades, your configuration settings migrate to the new version of the PKS tile automatically.
+
+By default, when you upgrade the PKS tile, PKS updates all Kubernetes clusters in your deployment. This behavior is controlled by the **Upgrade all clusters errand**:
+
+* The **Upgrade all clusters errand** is set to **Default (On)**. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates the PKS API server and each of your clusters, one at a time.
+  <p class="note"><strong>Note</strong>: The total upgrade time depends on the number and size of your Kubernetes clusters.</p>
+* The **Upgrade all clusters errand** is set to **Off**. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates only the PKS API server.
+
+If you set the **Upgrade all clusters errand** to **Off**, your Kubernetes cluster version will fall behind the PKS tile version. If your clusters fall more than one version behind the PKS tile, you can no longer upgrade the clusters. You must upgrade your clusters to match the PKS tile version before the next tile upgrade.
+
+<p class="note warning"><strong>WARNING</strong>: If you upgrade PKS from 1.0.x to 1.1, you must enable the <strong>Upgrade all clusters errand</strong>. This ensures existing clusters can perform resize or delete actions after the upgrade.</p>
+
+For more information about upgrading PKS, see [Upgrade the PKS Tile](upgrade-pks.html#upgrade-tile) in the _Upgrade PKS_ topic.
+
+### <a id='stemcell-updates'></a>Updating Stemcell
+
+Because PKS uses floating stemcells, updating the PKS tile with a new stemcell triggers the rolling of every VM in each Kubernetes cluster. Also, updating other product tiles in your deployment with a new stemcell causes the PKS tile to roll VMs. This rolling is enabled by the **Upgrade all clusters errand**. Pivotal recommends keeping the errand turned on because automatic rolling of VMs ensures that all deployed cluster VMs are patched. However, automatic rolling can cause downtime in your deployment.
+
+For more information about floating stemcells, see [Understanding Floating Stemcells](https://docs.pivotal.io/pivotalcf/2-2/customizing/understanding-stemcells.html).
+
+## <a id='workload-upgrades'></a>Upgrading Kubernetes Workloads
+
+This section explains how PKS recreates Kubernetes clusters during a PKS upgrade. For more information, see:
+
+* [Master Nodes During Upgrades](#master-upgrades)
+* [Worker Nodes During Upgrades](#worker-upgrades)
+
+For high availability, Pivotal recommends distributing your Kubernetes workloads across three Availability Zones (AZs), with at least three worker nodes per AZ.
+
+### <a id='master-upgrades'></a>Master Nodes During Upgrades
+
+When PKS upgrades a Kubernetes cluster, it recreates the master node first.
+
+#### <a id='single-master'></a>Single-Master Kubernetes Clusters
+
+When PKS upgrades a single-master Kubernetes cluster, you are not able to interact with your cluster, use the Kubernetes Command Line Interface (kubectl), or push new workloads. The cluster may not recover itself until the master instance is back up.
+
+Pivotal does not recommended using single-master Kubernetes clusters for production workloads or for any app that demands high availability.
+
+#### <a id='multi-master'></a>Multi-Master Kubernetes Clusters
+
+When PKS upgrades a multi-master Kubernetes cluster, you are able to interact with your cluster, use kubectl, or push new workloads.
+
+Pivotal recommends using multi-master Kubernetes clusters for production environments.
+
+### <a id='worker-upgrades'></a>Worker Nodes During Upgrades
+
+After PKS recreates the master node, it upgrades the worker nodes. Upgrades run on a single VM at a time. While one worker VM runs an upgrade, the workload on that VM goes down.
+
+* To prevent workload downtime during a Kubernetes cluster upgrade, Pivotal recommends running your workload on at least three worker VMs and using multiple replicas of your workloads across those VMs. For more information about maintaining workload uptime for Kubernetes clusters, see [Maintain Workload Uptime](maintain-uptime.html#persistent-volumes).
+
+* To ensure the uptime of your persistent volumes during a Kubernetes cluster upgrade, Pivotal recommends using at least three worker nodes per AZ. For more information about configuring persistent volumes, see [Persistent Volumes](maintain-uptime.html#persistent-volumes) in _Maintain Workload Uptime_.
