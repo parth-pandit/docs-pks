@@ -20,19 +20,19 @@ During upgrades, your configuration settings migrate to the new version of the P
 
 By default, when you upgrade the PKS tile, PKS updates all Kubernetes clusters in your deployment. This behavior is controlled by the **Upgrade all clusters errand**:
 
-* The **Upgrade all clusters errand** is set to **Default (On)**. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates the PKS API server and each of your clusters, one at a time.
+* The **Upgrade all clusters errand** is set to **Default (On)**. Your PKS-deployed Kubernetes clusters are upgraded automatically when the PKS tile upgrade runs. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates the PKS API server and each of your clusters, one at a time.
   <p class="note"><strong>Note</strong>: The total upgrade time depends on the number and size of your Kubernetes clusters.</p>
-* The **Upgrade all clusters errand** is set to **Off**. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates only the PKS API server.
+* The **Upgrade all clusters errand** is set to **Off**. After you click **Apply Changes** on the Ops Manager Installation Dashboard, PKS recreates only the PKS API server. You can upgrade all PKS-deployed Kubernetes clusters by setting the **Upgrade all clusters errand** to **Default (On)** and clicking **Apply Changes**.
 
 If you set the **Upgrade all clusters errand** to **Off**, your Kubernetes cluster version will fall behind the PKS tile version. If your clusters fall more than one version behind the PKS tile, you can no longer upgrade the clusters. You must upgrade your clusters to match the PKS tile version before the next tile upgrade.
 
 <p class="note warning"><strong>WARNING</strong>: If you upgrade PKS from 1.0.x to 1.1, you must enable the <strong>Upgrade all clusters errand</strong>. This ensures existing clusters can perform resize or delete actions after the upgrade.</p>
 
-For more information about upgrading PKS, see [Upgrade the PKS Tile](upgrade-pks.html#upgrade-tile) in the _Upgrade PKS_ topic.
+For more information about upgrading PKS, see [Upgrade PKS](upgrade-pks.html).
 
 ### <a id='stemcell-updates'></a>Updating Stemcell
 
-Because PKS uses floating stemcells, updating the PKS tile with a new stemcell triggers the rolling of every VM in each Kubernetes cluster. Also, updating other product tiles in your deployment with a new stemcell causes the PKS tile to roll VMs. This rolling is enabled by the **Upgrade all clusters errand**. Pivotal recommends keeping the errand turned on because automatic rolling of VMs ensures that all deployed cluster VMs are patched. However, automatic rolling can cause downtime in your deployment.
+PKS uses floating stemcells. Updating the PKS tile with a new stemcell triggers the rolling of every VM in each Kubernetes cluster. Also, updating other product tiles in your deployment with a new stemcell causes the PKS tile to roll VMs. This rolling is enabled by the **Upgrade all clusters errand**. Pivotal recommends keeping the errand turned on because automatic rolling of VMs ensures that all deployed cluster VMs are patched. However, automatic rolling can cause downtime in your deployment.
 
 For more information about floating stemcells, see [Understanding Floating Stemcells](https://docs.pivotal.io/pivotalcf/2-2/customizing/understanding-stemcells.html).
 
