@@ -32,9 +32,10 @@ For more information about upgrading PKS, see [Upgrade PKS](upgrade-pks.html).
 
 ### <a id='stemcell-updates'></a>Updating Stemcell
 
-PKS uses floating stemcells. Updating the PKS tile with a new stemcell triggers the rolling of every VM in each Kubernetes cluster. Also, updating other product tiles in your deployment with a new stemcell causes the PKS tile to roll VMs. This rolling is enabled by the **Upgrade all clusters errand**. Pivotal recommends keeping the errand turned on because automatic rolling of VMs ensures that all deployed cluster VMs are patched. However, automatic rolling can cause downtime in your deployment.
+PKS uses floating stemcells. For information about floating stemcells, see [Understanding Floating Stemcells](https://docs.pivotal.io/pivotalcf/2-1/customizing/understanding-stemcells.html).
 
-For more information about floating stemcells, see [Understanding Floating Stemcells](https://docs.pivotal.io/pivotalcf/2-2/customizing/understanding-stemcells.html).
+Updating the PKS tile with a new stemcell triggers the rolling of every VM in each Kubernetes cluster. Also, updating other product tiles in your deployment with a new stemcell causes the PKS tile to roll VMs. This rolling is enabled by the **Upgrade all clusters errand**. Pivotal recommends keeping the errand turned on because automatic rolling of VMs ensures that all deployed cluster VMs are patched. However, automatic rolling can cause downtime in your deployment. For information about maintaining workload uptime, see
+[Upgrading Kubernetes Workloads](workload-upgrades) and [Maintain Workload Uptime](maintain-uptime.html)
 
 ## <a id='workload-upgrades'></a>Upgrading Kubernetes Workloads
 
@@ -65,6 +66,6 @@ Pivotal recommends using multi-master Kubernetes clusters for production environ
 
 After PKS recreates the master node, it upgrades the worker nodes. Upgrades run on a single VM at a time. While one worker VM runs an upgrade, the workload on that VM goes down.
 
-* To prevent workload downtime during a Kubernetes cluster upgrade, Pivotal recommends running your workload on at least three worker VMs and using multiple replicas of your workloads across those VMs. For more information about maintaining workload uptime for Kubernetes clusters, see [Maintain Workload Uptime](maintain-uptime.html#persistent-volumes).
+* To prevent workload downtime during a Kubernetes cluster upgrade, Pivotal recommends running your workload on at least three worker VMs and using multiple replicas of your workloads across those VMs. For more information about maintaining workload uptime for Kubernetes clusters, see [Maintain Workload Uptime](maintain-uptime.html).
 
 * To ensure the uptime of your persistent volumes during a Kubernetes cluster upgrade, Pivotal recommends using at least three worker nodes per AZ. For more information about configuring persistent volumes, see [Persistent Volumes](maintain-uptime.html#persistent-volumes) in _Maintain Workload Uptime_.
